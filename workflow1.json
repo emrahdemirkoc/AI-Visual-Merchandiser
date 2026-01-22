@@ -1,0 +1,266 @@
+{
+  "name": "AI-Powered Visual Merchandising Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {
+          "download": true
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "44571ae9-6cdf-4665-aa06-4811969aa17e",
+      "name": "Inbound Product Stream",
+      "webhookId": "8dbd9aec-f937-4a37-a488-c5316980b649",
+      "credentials": {
+        "telegramApi": {
+          "id": "JwfbCnmBc6uhhA9p",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "GPT-4O"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "Sen uzman bir Etsy Metin Yazarı ve SEO Stratejistisin. GÖREVİN: Ürün fotoğrafını analiz et ve sonucu SAF JSON formatında ver.\n\nÖNEMLİ: \"aciklama\" kısmı çok detaylı, uzun ve profesyonel olmalı. Aşağıdaki başlıkları içermeli:\n- 🌟 Product Story (Duygusal giriş)\n- 🧶 Material & Quality (Malzeme kalitesi)\n- 📏 Size & Fit (Tahmini beden bilgisi)\n- 🧼 Care Instructions (Yıkama talimatı)\n- 🎁 Gift Option (Hediye vurgusu)\n\nÇIKTI FORMATI (Sadece bu JSON'u ver):\n{\n\"urun_tanimi\": \"Buraya ürünün Türkçe kısa analizini yaz (renk, desen, tür)\",\n\"baslik\": \"Buraya Etsy uyumlu, çok satan kelimelerle dolu İngilizce başlığı yaz (Max 140 karakter)\",\n\"etiketler\": \"Buraya virgülle ayrılmış 13 adet İngilizce etiketi yaz\",\n\"aciklama\": \"Buraya yukarıda bahsettiğim maddeleri içeren, emojilerle süslenmiş, paragraflara ayrılmış, madde işaretleri içeren UZUN ve SATIŞ ODAKLI İngilizce açıklamayı yaz.\"\n}"
+            },
+            {
+              "type": "image",
+              "imageType": "base64"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "9df961e2-5ad9-4f7d-b760-7f477fcb9808",
+      "name": "AI Vision & SEO Engine",
+      "credentials": {
+        "openAiApi": {
+          "id": "8G9HHRMyQLpATcg9",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// DİKKAT: Senin yapında çift 'content' olduğu için yolu uzattık\nconst content =$input.first().json.output[0].content[0].text;\n\n// Temizlik ve Çevirme\nconst cleanJson = content.replace(/```json/g, '').replace(/```/g, '').trim();\n\nreturn JSON.parse(cleanJson);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        560,
+        0
+      ],
+      "id": "e8099cfd-e955-4161-bbb7-1abcae32e517",
+      "name": "JSON Data Parser"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1XHkz-wS6UbMNDM_q0bl2AvuhxeIAo3lBzQPQSn5ZNUI",
+          "mode": "list",
+          "cachedResultName": "envanter takibi",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XHkz-wS6UbMNDM_q0bl2AvuhxeIAo3lBzQPQSn5ZNUI/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XHkz-wS6UbMNDM_q0bl2AvuhxeIAo3lBzQPQSn5ZNUI/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ürün Tanımı\r\n": "={{ $json.urun_tanimi }}",
+            "Başlık\r\n": "={{ $json.baslik }}",
+            "Etiketler\r\n": "={{ $json.etiketler }}",
+            "Açıklama\n": "={{ $json.aciklama }}",
+            "Tarih": "={{ $now.format('yyyy-MM-dd HH:mm') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Tarih",
+              "displayName": "Tarih",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ürün Tanımı\r\n",
+              "displayName": "Ürün Tanımı\r\n",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Başlık\r\n",
+              "displayName": "Başlık\r\n",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Etiketler\r\n",
+              "displayName": "Etiketler\r\n",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Açıklama\n",
+              "displayName": "Açıklama\n",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        800,
+        0
+      ],
+      "id": "ec604cd8-c3d7-4f99-8db9-725ff9dd113f",
+      "name": "Inventory Database (CMS)",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "qcwiYX4ZZdYsGZYA",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "479149859",
+        "text": "=✅ Ürün Analizi Kaydedildi!\n\n📌 Başlık:\n{{ $('JSON Data Parser').item.json.baslik }}\n\n📝 Açıklama:\n{{ $('JSON Data Parser').item.json.aciklama }}\n\n🏷️ Etiketler:\n{{ $('JSON Data Parser').item.json.etiketler }}\n\n(Envantere Eklendi: {{ $json[\"Tarih\"] }})",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "9eb42868-87e5-40bf-a0de-9865d2d017bd",
+      "name": "Mobile Admin Dashboard",
+      "webhookId": "535728f3-804e-48b7-be01-16c418405d96",
+      "credentials": {
+        "telegramApi": {
+          "id": "JwfbCnmBc6uhhA9p",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Inbound Product Stream": {
+      "main": [
+        [
+          {
+            "node": "AI Vision & SEO Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Vision & SEO Engine": {
+      "main": [
+        [
+          {
+            "node": "JSON Data Parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "JSON Data Parser": {
+      "main": [
+        [
+          {
+            "node": "Inventory Database (CMS)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Inventory Database (CMS)": {
+      "main": [
+        [
+          {
+            "node": "Mobile Admin Dashboard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "ee9d80e6-c639-4be1-94c2-785ce705bc4d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a2e52c777bc2ceaba0402a3b3768c056f8e30c3434809d4df0853e039bf670b5"
+  },
+  "id": "eYXX6X4t4HxIdp8GXHe2u",
+  "tags": []
+}
