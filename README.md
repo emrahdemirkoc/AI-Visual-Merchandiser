@@ -2,7 +2,7 @@
 
 > **"From Snapshot to SEO Listing in 8 Seconds." An autonomous agent that sees products, writes descriptions, and manages inventory using GPT-4o Vision & n8n.**
 
-![Workflow Screenshot](screenshot.png)
+![Workflow Screenshot](screenshot.png.png)
 
 ## 🚨 The Problem
 Listing a product on global marketplaces (like Etsy/Amazon) is a bottleneck:
